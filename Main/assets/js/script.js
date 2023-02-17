@@ -1,5 +1,5 @@
 //---https://api.openweathermap.org/data/2.5/weather?q=Charlotte&appid=371dead36e8c5b8aa978441fa4daca9a&units=imperial
-var searchCityEl = document.querySelector('#searchCity');
+var searchBtn = document.querySelector('#searchBtn');
 var cityResultEl = document.querySelector('#city-result')
 var cityContentEl = document.querySelector('#city-content');
 
@@ -7,22 +7,6 @@ var geocodeLocationUrl = 'https://api.openweathermap.org/geo/1.0/direct?q=' + ci
 var fiveDayApiUrl = 'https://api.openweathermap.org/data/2.5/forecast?lat=' + cityName + '&limit=1&appid=' + apiKey;
 var currentApiUrl = 'https://api.openweathermap.org/data/2.5/weather?lat=' + cityName + '&limit=1&appid=' + apiKey;
 var apiKey = '0cf9fa6352cc1e6990abaf90639d4a15'
-
-var formSubmitHandler = function(event) {
-    event.preventDefault();
-    var City = citySearchEl.value.trim();
-    if (City) {
-        getWeather(City);
-        cityResultEl.textContent = '';
-        cityContentEl.textContent = '';
-    } else {
-        alert('Enter a city!');
-    }
-};
-
-var buttonHandler = function (event) {
-    
-}
 
 function coordinates(cityName) {
     var geocodeLocationUrl = 'https://api.openweathermap.org/geo/1.0/direct?q=' + cityName + '&limit=1&appid=' + apiKey;
@@ -38,7 +22,7 @@ function coordinates(cityName) {
         });
 };
 
-function getWeather(lat, lon) {
+function searchWeatherApi(lat, lon) {
     var fiveDayApiUrl = 'https://api.openweathermap.org/data/2.5/forecast?lat=' + lat + '&lon=' + lon + '&appid=' + apiKey + '&units=imperial';
     var currentApiUrl = 'https://api.openweathermap.org/data/2.5/weather?lat=' + lat + '&lon=' + lon + '&appid=' + apiKey + '&units=imperial';
     fetch(fiveDayApiUrl)
@@ -63,6 +47,16 @@ function getWeather(lat, lon) {
             console.log(err);
         });
 };
+
+function displayCurrent(results) {
+    today.results.innerHTML = null;
+    var time = results.dt
+    var updatedTime = new Date(time * 1000);
+    var cityName = results.name;
+    var icon = results.weather[0].icon;
+    var temp = results.main.humidity;
+    var wind = results.wind.speed;
+}
 
 
 searchCityEl.addEventListener('submit', formSubmitHandler);
