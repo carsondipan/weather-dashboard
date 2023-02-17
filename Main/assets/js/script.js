@@ -1,5 +1,6 @@
 //---https://api.openweathermap.org/data/2.5/weather?q=Charlotte&appid=371dead36e8c5b8aa978441fa4daca9a&units=imperial
 var searchBtn = document.querySelector('#searchBtn');
+var searchCityEl = document.querySelector('#searchBtn')
 var cityResultEl = document.querySelector('#city-result')
 var cityContentEl = document.querySelector('#city-content');
 
@@ -7,6 +8,21 @@ var geocodeLocationUrl = 'https://api.openweathermap.org/geo/1.0/direct?q=' + ci
 var fiveDayApiUrl = 'https://api.openweathermap.org/data/2.5/forecast?lat=' + cityName + '&limit=1&appid=' + apiKey;
 var currentApiUrl = 'https://api.openweathermap.org/data/2.5/weather?lat=' + cityName + '&limit=1&appid=' + apiKey;
 var apiKey = '0cf9fa6352cc1e6990abaf90639d4a15'
+
+var formSubmitHandler = function (event) {
+    event.preventDefault();
+  
+    var cityName = nameInputEl.value.trim();
+  
+    if (cityName) {
+      getUserRepos(username);
+  
+      repoContainerEl.textContent = '';
+      nameInputEl.value = '';
+    } else {
+      alert('Please enter a GitHub username');
+    }
+  };
 
 function coordinates(cityName) {
     var geocodeLocationUrl = 'https://api.openweathermap.org/geo/1.0/direct?q=' + cityName + '&limit=1&appid=' + apiKey;
@@ -56,6 +72,18 @@ function displayCurrent(results) {
     var icon = results.weather[0].icon;
     var temp = results.main.humidity;
     var wind = results.wind.speed;
+
+    var cityCardEl = document.createElement('div');
+    cityCardEl.className = 'cityCard mainCard';
+
+    var cityCardElBody = document.createElement('h3');
+    cardTitleEl.classname = 'cityCard-body';
+
+    cityCardTitleEl = document.createElement('h3');
+    cityCardTitleEl.classname = 'cityCard-title';
+    cityCardTitleEl.textContent = cityName;
+
+
 }
 
 
