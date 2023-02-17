@@ -1,48 +1,68 @@
 //---https://api.openweathermap.org/data/2.5/weather?q=Charlotte&appid=371dead36e8c5b8aa978441fa4daca9a&units=imperial
+var searchCityEl = document.querySelector('#searchCity');
+var cityResultEl = document.querySelector('#city-result')
 var cityContentEl = document.querySelector('#city-content');
-var searchCity = document.querySelector('#searchCity');
 
+var geocodeLocationUrl = 'https://api.openweathermap.org/geo/1.0/direct?q=' + cityName + '&limit=1&appid=' + apiKey;
+var fiveDayApiUrl = 'https://api.openweathermap.org/data/2.5/forecast?lat=' + cityName + '&limit=1&appid=' + apiKey;
+var currentApiUrl = 'https://api.openweathermap.org/data/2.5/weather?lat=' + cityName + '&limit=1&appid=' + apiKey;
+var apiKey = '0cf9fa6352cc1e6990abaf90639d4a15'
 
-var searchApi = function () {
-    var city = $('#city').val();
-    localStorage.setItem("city", city);
-    var apiUrl = 'https://api.openweathermap.org/data/2.5/forecast?q=' + city + '&appid=0cf9fa6352cc1e6990abaf90639d4a15'
-    fetch (apiUrl)
+var formSubmitHandler = function(event) {
+    event.preventDefault();
+    var City = citySearchEl.value.trim();
+    if (City) {
+        getWeather(City);
+        cityResultEl.textContent = '';
+        cityContentEl.textContent = '';
+    } else {
+        alert('Enter a city!');
+    }
+};
+
+var buttonHandler = function (event) {
+    
+}
+
+function coordinates(cityName) {
+    var geocodeLocationUrl = 'https://api.openweathermap.org/geo/1.0/direct?q=' + cityName + '&limit=1&appid=' + apiKey;
+    fetch(geocodeLocationUrl)
         .then(function (response) {
-            if (response.ok) {
-                throw response.json();
-            }
             return response.json();
         })
-        .then(function (LocRes) {
-            return resultTextEl.textContent = LocRes.search.query;
-            console.log(LocRes);
-            if(!LocRes.results.length) {
-                console.log('No city found');
-                resultContentEl.innerHTML = '<h3>No city found, try another search.</h3>';
-            } else {
-                resultContentEl.textContent = '';
-                for (var i=0; i < LocRes.results.length; i++) {
-                    printResults(LocRes.results[i]);
-                }
-            }
+        .then(function (data) {
+            getWeather(data[0].lat, data[0].lon);
         })
-        .catch(function(error) {
-            console.error(error);
+        .catch(function (err) {
+            console.log(err);
         });
-}
+};
 
-function handleSearch(event) {
-    event.preventDefault();
-    var searchInputVal = document.querySelector('#searchCity').value;
+function getWeather(lat, lon) {
+    var fiveDayApiUrl = 'https://api.openweathermap.org/data/2.5/forecast?lat=' + lat + '&lon=' + lon + '&appid=' + apiKey + '&units=imperial';
+    var currentApiUrl = 'https://api.openweathermap.org/data/2.5/weather?lat=' + lat + '&lon=' + lon + '&appid=' + apiKey + '&units=imperial';
+    fetch(fiveDayApiUrl)
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            displayFiveDay(data);
+        })
+        .catch(function (err) {
+            console.log(err);
+        });
+    fetch(currentApiUrl)
+        .then(function(response) {
+            return response.json();
+            console.log('cityName:', response)
+        })    
+        .then(function(data) {
+            displayCurrent(data);
+        })
+        .catch(function(err) {
+            console.log(err);
+        });
+};
 
-    if (!searchInputVal) {
-        console.error('Input a city.');
-        return;
-    }
-    searchApi(searchInputVal);
-}
 
-searchCity.addEventListener('submit', handleSearch);
-
-getParams();
+searchCityEl.addEventListener('submit', formSubmitHandler);
