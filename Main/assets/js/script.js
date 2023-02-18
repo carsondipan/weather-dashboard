@@ -83,8 +83,7 @@ function displayCurrent(results) {
     cityCardTitleEl.classname = 'cityCard-title';
     cityCardTitleEl.textContent = cityName;
 
-
-}
+};
 
 
 searchCityEl.addEventListener('submit', formSubmitHandler);
